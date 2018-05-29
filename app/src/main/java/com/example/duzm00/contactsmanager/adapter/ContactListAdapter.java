@@ -61,8 +61,6 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             TextView desc = itemView.findViewById(R.id.description);
 
             title.setText(contact.getFirstName() + " "+  contact.getLastName());
-            //subtitle.setText(DateFormat.getDateTimeInstance().format(contact.getBirthday()));
-            //desc.setText(contact.getNote() + "\n" + contact.getAddresses() + "\n" + contact.getOrganization());
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.example.duzm00.contactsmanager.screen;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.duzm00.contactsmanager.R;
 import com.example.duzm00.contactsmanager.adapter.ContactListAdapter;
@@ -30,6 +33,7 @@ import retrofit2.Response;
 public class ContactListFragment extends Fragment {
 
     private NetworkManager networkManager = new NetworkManager();
+    private ContactListAdapter adapter = new ContactListAdapter();
 
     public ContactListFragment(){
 
@@ -39,6 +43,7 @@ public class ContactListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         return inflater.inflate(R.layout.fragment_contact_list, container, false);
     }
 
@@ -48,9 +53,49 @@ public class ContactListFragment extends Fragment {
 
         RecyclerView contactRecycleView = view.findViewById(R.id.fragmentRecyclerView);
         contactRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
-        final ContactListAdapter adapter = new ContactListAdapter();
         contactRecycleView.setAdapter(adapter);
 
+        loadContacts();
+
+        FloatingActionButton addContactBtn = view.findViewById(R.id.add_contact_fab);
+        addContactBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(lister != null){
+                    lister.onCreateContact();
+                }
+            }
+        });
+
+
+    }
+
+    private OnContactListFragmentIntegrationListener lister;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if(context instanceof OnContactListFragmentIntegrationListener)
+        {
+            lister = (OnContactListFragmentIntegrationListener) context;
+        }
+        else {
+            throw new RuntimeException("");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        lister = null;
+    }
+
+    public interface OnContactListFragmentIntegrationListener{
+        void onCreateContact();
+    }
+
+    private void loadContacts() {
         networkManager.getContactService().getContactList().enqueue(new Callback<List<Contact>>() {
             @Override
             public void onResponse(Call<List<Contact>> call, Response<List<Contact>> response) {
@@ -62,7 +107,5 @@ public class ContactListFragment extends Fragment {
                 Log.i("error", call.toString());
             }
         });
-
-
     }
 }

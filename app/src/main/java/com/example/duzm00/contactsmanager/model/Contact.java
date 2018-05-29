@@ -44,6 +44,10 @@ public class Contact {
         this.organization = organization;
     }
 
+    public Contact() {
+
+    }
+
     public String getUUID() {
         return UUID;
     }
