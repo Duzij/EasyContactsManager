@@ -1,9 +1,12 @@
 package com.example.duzm00.contactsmanager.model;
 
 import android.provider.ContactsContract;
+import android.text.TextUtils;
 
 import com.squareup.moshi.Json;
 
+import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -11,7 +14,7 @@ import java.util.List;
  * Created by duzm00 on 29.05.2018.
  */
 
-public class Contact {
+public class Contact implements Serializable{
 
     @Json(name = "uuid")
     public String UUID;
@@ -46,6 +49,16 @@ public class Contact {
 
     public Contact() {
 
+    }
+
+    public void update(String firstName, String lastName, String phone){
+        this.firstName = firstName;
+        this.lastName = lastName;
+
+        if(!TextUtils.isEmpty(phone)){
+            Phone phoneNum = new Phone("personal", phone);
+            phones = Collections.singletonList(phoneNum);
+        }
     }
 
     public String getUUID() {

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.duzm00.contactsmanager.R;
 import com.example.duzm00.contactsmanager.model.Contact;
+import com.example.duzm00.contactsmanager.screen.ContactListFragment;
 
 import java.text.DateFormat;
 import java.util.List;
@@ -20,6 +21,12 @@ import java.util.List;
 public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.ViewHolder> {
 
     private List<Contact> contacts;
+    public OnContactItemInteracted listener;
+
+    public interface OnContactItemInteracted{
+        void onContactClicked(Contact contact);
+    }
+
 
     public ContactListAdapter()
     {
@@ -55,12 +62,20 @@ public class ContactListAdapter extends RecyclerView.Adapter<ContactListAdapter.
             super(itemView);
         }
 
-        void onBind(Contact contact){
+        void onBind(final Contact contact){
             TextView title = itemView.findViewById(R.id.title);
             TextView subtitle = itemView.findViewById(R.id.subtitile);
             TextView desc = itemView.findViewById(R.id.description);
 
             title.setText(contact.getFirstName() + " "+  contact.getLastName());
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onContactClicked(contact);
+                }
+            });
+
         }
     }
 }

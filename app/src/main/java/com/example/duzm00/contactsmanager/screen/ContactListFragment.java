@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -35,6 +36,7 @@ public class ContactListFragment extends Fragment {
     private NetworkManager networkManager = new NetworkManager();
     private ContactListAdapter adapter = new ContactListAdapter();
 
+
     public ContactListFragment(){
 
     }
@@ -50,6 +52,16 @@ public class ContactListFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        adapter.listener = new ContactListAdapter.OnContactItemInteracted() {
+            @Override
+            public void onContactClicked(Contact contact) {
+                if(lister != null)
+                {
+                    lister.onEditContact(contact);
+                }
+            }
+        };
 
         RecyclerView contactRecycleView = view.findViewById(R.id.fragmentRecyclerView);
         contactRecycleView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -93,7 +105,10 @@ public class ContactListFragment extends Fragment {
 
     public interface OnContactListFragmentIntegrationListener{
         void onCreateContact();
+
+        void onEditContact(Contact contact);
     }
+
 
     private void loadContacts() {
         networkManager.getContactService().getContactList().enqueue(new Callback<List<Contact>>() {
